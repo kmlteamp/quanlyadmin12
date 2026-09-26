@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KHO GAME - ADMIN</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Segoe UI,sans-serif;
+  background:#07111f;
+  color:#fff;
+  min-height:100vh;
+}
+
+/* LOGIN */
+
+.login{
+  position:fixed;
+  inset:0;
+  background:#07111f;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:999;
+}
+
+.login-box{
+  width:100%;
+  max-width:400px;
+  background:#142842;
+  border:1px solid #1e3a5f;
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+
+.login-title{
+  text-align:center;
+  font-size:25px;
+  font-weight:800;
+  color:#2ecc71;
+  margin-bottom:8px;
+}
+
+.login-sub{
+  text-align:center;
+  color:#7a9cc6;
+  font-size:13px;
+  margin-bottom:25px;
+}
+
+.login-box input{
+  width:100%;
+  padding:14px;
+  background:#07111f;
+  color:#fff;
+  border:1px solid #1e3a5f;
+  border-radius:10px;
+  outline:none;
+  margin-bottom:12px;
+}
+
+.login-box input:focus{
+  border-color:#2ecc71;
+}
+
+.login-btn{
+  width:100%;
+  padding:14px;
+  background:#2ecc71;
+  color:#fff;
+  border:0;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* ADMIN */
+
+.admin{
+  display:none;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:#2ecc71;
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  box-shadow:0 5px 20px rgba(46,204,113,.3);
+}
+
+.admin-title{
+  font-size:20px;
+  font-weight:800;
+}
+
+.logout{
+  background:#fff;
+  color:#1f8d50;
+  border:0;
+  padding:9px 15px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* MAIN */
+
+.main{
+  max-width:1200px;
+  margin:auto;
+  padding:25px 18px 70px;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.stat{
+  background:#142842;
+  border:1px solid #1e3a5f;
+  border-radius:13px;
+  padding:18px;
+}
+
+.stat-title{
+  color:#7a9cc6;
+  font-size:12px;
+  margin-bottom:7px;
+}
+
+.stat-number{
+  font-size:26px;
+  font-weight:800;
+}
+
+.search{
+  margin-bottom:20px;
+}
+
+.search input{
+  width:100%;
+  padding:13px 15px;
+  background:#142842;
+  border:1px solid #1e3a5f;
+  color:#fff;
+  border-radius:10px;
+  outline:none;
+}
+
+.search input:focus{
+  border-color:#2ecc71;
+}
+
+/* GAME */
+
+.games{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:17px;
+}
+
+.game{
+  background:#142842;
+  border:1px solid #1e3a5f;
+  border-radius:15px;
+  overflow:hidden;
+}
+
+.game.paused{
+  border-color:#f39c12;
+}
+
+.game-preview{
+  height:155px;
+  background:#000;
+}
+
+.game-preview iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  pointer-events:none;
+}
+
+.game-body{
+  padding:15px;
+}
+
+.game-name{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.info{
+  color:#8aa4c4;
+  font-size:13px;
+  line-height:1.7;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:7px;
+  font-size:11px;
+  font-weight:bold;
+  margin-top:7px;
+}
+
+.status.active{
+  background:#164f35;
+  color:#55e695;
+}
+
+.status.paused{
+  background:#55380e;
+  color:#ffc15a;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:13px;
+}
+
+.action{
+  border:0;
+  padding:10px;
+  border-radius:8px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.pause{
+  background:#f39c12;
+}
+
+.resume{
+  background:#2ecc71;
+}
+
+.delete{
+  background:#e74c3c;
+}
+
+.view{
+  background:#3498db;
+}
+
+/* EMPTY */
+
+.empty{
+  text-align:center;
+  padding:70px 20px;
+  color:#617995;
+  grid-column:1/-1;
+}
+
+/* CONFIRM */
+
+.confirm{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:200;
+}
+
+.confirm.active{
+  display:flex;
+}
+
+.confirm-box{
+  width:100%;
+  max-width:400px;
+  background:#142842;
+  border:1px solid #1e3a5f;
+  border-radius:15px;
+  padding:25px;
+}
+
+.confirm-box h2{
+  margin-bottom:10px;
+}
+
+.confirm-box p{
+  color:#8aa4c4;
+  line-height:1.5;
+  margin-bottom:20px;
+}
+
+.confirm-actions{
+  display:flex;
+  gap:10px;
+}
+
+.confirm-actions button{
+  flex:1;
+  padding:12px;
+  border:0;
+  border-radius:9px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.cancel{
+  background:#34495e;
+}
+
+.confirm-delete{
+  background:#e74c3c;
+}
+
+.notice{
+  position:fixed;
+  top:75px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#2ecc71;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:9px;
+  display:none;
+  z-index:500;
+  font-weight:bold;
+}
+
+@media(max-width:700px){
+
+  .dashboard{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .topbar{
+    padding:12px;
+  }
+
+  .admin-title{
+    font-size:16px;
+  }
+
+}
+
+@media(max-width:450px){
+
+  .games{
+    grid-template-columns:1fr;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div class="login" id="login">
+
+  <div class="login-box">
+
+    <div class="login-title">
+      🛡️ ADMIN
+    </div>
+
+    <div class="login-sub">
+      Quản lý KHO GAME
+    </div>
+
+    <input
+      type="text"
+      id="adminUser"
+      placeholder="Tên Admin"
+    >
+
+    <input
+      type="password"
+      id="adminPass"
+      placeholder="Mật khẩu Admin"
+    >
+
+    <button
+      class="login-btn"
+      id="loginBtn"
+    >
+      ĐĂNG NHẬP ADMIN
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ADMIN -->
+
+<div class="admin" id="admin">
+
+  <div class="topbar">
+
+    <div class="admin-title">
+      🎮 KHO GAME ADMIN
+    </div>
+
+    <button
+      class="logout"
+      id="logout"
+    >
+      ĐĂNG XUẤT
+    </button>
+
+  </div>
+
+
+  <div class="main">
+
+    <!-- THỐNG KÊ -->
+
+    <div class="dashboard">
+
+      <div class="stat">
+
+        <div class="stat-title">
+          TỔNG GAME
+        </div>
+
+        <div
+          class="stat-number"
+          id="totalGames"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-title">
+          GAME ĐANG HOẠT ĐỘNG
+        </div>
+
+        <div
+          class="stat-number"
+          id="activeGames"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-title">
+          GAME TẠM NGỪNG
+        </div>
+
+        <div
+          class="stat-number"
+          id="pausedGames"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-title">
+          TỔNG LƯỢT CHƠI
+        </div>
+
+        <div
+          class="stat-number"
+          id="totalPlays"
+        >
+          0
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- TÌM KIẾM -->
+
+    <div class="search">
+
+      <input
+        id="search"
+        placeholder="🔍 Tìm game, tác giả, quốc gia..."
+      >
+
+    </div>
+
+
+    <!-- GAME -->
+
+    <div
+      class="games"
+      id="games"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<!-- CONFIRM DELETE -->
+
+<div
+  class="confirm"
+  id="confirm"
+>
+
+  <div class="confirm-box">
+
+    <h2>🗑️ Xóa game?</h2>
+
+    <p id="confirmText">
+      Bạn có chắc muốn xóa game này?
+    </p>
+
+    <div class="confirm-actions">
+
+      <button
+        class="cancel"
+        id="cancelDelete"
+      >
+        HỦY
+      </button>
+
+      <button
+        class="confirm-delete"
+        id="confirmDelete"
+      >
+        XÓA GAME
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div
+  class="notice"
+  id="notice"
+></div>
+
+
+<script>
+
+/* =====================================================
+   ADMIN LOGIN
+===================================================== */
+
+/*
+   Đổi tài khoản và mật khẩu tại đây.
+*/
+
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin123";
+
+
+const $ = id =>
+  document.getElementById(id);
+
+
+$("loginBtn").onclick = () => {
+
+  const username =
+    $("adminUser").value.trim();
+
+  const password =
+    $("adminPass").value;
+
+
+  if(
+    username === ADMIN_USERNAME &&
+    password === ADMIN_PASSWORD
+  ){
+
+    sessionStorage.setItem(
+      "khoGameAdminLogin",
+      "true"
+    );
+
+    showAdmin();
+
+  }else{
+
+    alert(
+      "❌ Sai tài khoản hoặc mật khẩu Admin!"
+    );
+
+  }
+
+};
+
+
+/* =====================================================
+   HIỂN THỊ ADMIN
+===================================================== */
+
+function showAdmin(){
+
+  $("login").style.display="none";
+
+  $("admin").style.display="block";
+
+  render();
+
+}
+
+
+if(
+  sessionStorage.getItem(
+    "khoGameAdminLogin"
+  ) === "true"
+){
+
+  showAdmin();
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+$("logout").onclick = () => {
+
+  sessionStorage.removeItem(
+    "khoGameAdminLogin"
+  );
+
+  location.reload();
+
+};
+
+
+/* =====================================================
+   STORAGE
+===================================================== */
+
+function getGames(){
+
+  return JSON.parse(
+    localStorage.getItem(
+      "khoGameData"
+    ) || "[]"
+  );
+
+}
+
+
+function saveGames(games){
+
+  localStorage.setItem(
+    "khoGameData",
+    JSON.stringify(games)
+  );
+
+}
+
+
+/* =====================================================
+   NOTICE
+===================================================== */
+
+function notice(text){
+
+  $("notice").textContent=text;
+
+  $("notice").style.display="block";
+
+  setTimeout(()=>{
+
+    $("notice").style.display="none";
+
+  },2200);
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function escapeHtml(s){
+
+  return String(s || "")
+    .replace(/[&<>"']/g,c=>({
+
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+
+    })[c]);
+
+}
+
+
+/* =====================================================
+   RATING
+===================================================== */
+
+function getRating(game){
+
+  if(
+    !game.ratings ||
+    game.ratings.length === 0
+  ){
+
+    return "Chưa có";
+
+  }
+
+  const total =
+    game.ratings.reduce(
+      (sum,x)=>sum+x.rating,
+      0
+    );
+
+  return (
+    total /
+    game.ratings.length
+  ).toFixed(1);
+
+}
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+function render(){
+
+  const games =
+    getGames();
+
+  const filter =
+    $("search").value
+      .trim()
+      .toLowerCase();
+
+
+  const filtered =
+    games.filter(g => {
+
+      return (
+
+        (g.name || "")
+          .toLowerCase()
+          .includes(filter)
+
+        ||
+
+        (g.author || "")
+          .toLowerCase()
+          .includes(filter)
+
+        ||
+
+        (g.country || "")
+          .toLowerCase()
+          .includes(filter)
+
+      );
+
+    });
+
+
+  /* THỐNG KÊ */
+
+  const active =
+    games.filter(
+      g=>g.paused !== true
+    ).length;
+
+
+  const paused =
+    games.filter(
+      g=>g.paused === true
+    ).length;
+
+
+  const plays =
+    games.reduce(
+      (sum,g)=>
+        sum + Number(g.plays || 0),
+      0
+    );
+
+
+  $("totalGames").textContent =
+    games.length;
+
+  $("activeGames").textContent =
+    active;
+
+  $("pausedGames").textContent =
+    paused;
+
+  $("totalPlays").textContent =
+    plays;
+
+
+  /* GAME */
+
+  if(filtered.length===0){
+
+    $("games").innerHTML=`
+      <div class="empty">
+        🎮 Không có game nào
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  $("games").innerHTML =
+    filtered.map(g=>{
+
+      const paused =
+        g.paused === true;
+
+
+      const oneStar =
+        (g.ratings || [])
+          .filter(
+            x=>x.rating===1
+          ).length;
+
+
+      return `
+
+        <div
+          class="game ${paused ? "paused" : ""}"
+        >
+
+          <div class="game-preview">
+
+            <iframe
+              srcdoc="${escapeAttr(g.code || "")}"
+              sandbox="allow-scripts"
+            ></iframe>
+
+          </div>
+
+
+          <div class="game-body">
+
+            <div class="game-name">
+
+              ${escapeHtml(g.name)}
+
+            </div>
+
+
+            <div class="info">
+
+              👤 Tác giả:
+              ${escapeHtml(g.author)}
+
+              <br>
+
+              🌍 Quốc gia:
+              ${escapeHtml(g.country)}
+
+              <br>
+
+              👁️ Lượt chơi:
+              ${Number(g.plays || 0)}
+
+              <br>
+
+              ⭐ Đánh giá:
+              ${getRating(g)} / 5
+
+              <br>
+
+              ❌ Lượt 1⭐:
+              ${oneStar}
+
+            </div>
+
+
+            <span
+              class="status ${
+                paused
+                  ? "paused"
+                  : "active"
+              }"
+            >
+
+              ${
+                paused
+                ? "⛔ TẠM NGỪNG"
+                : "🟢 ĐANG HOẠT ĐỘNG"
+              }
+
+            </span>
+
+
+            <div class="actions">
+
+              <button
+                class="action view"
+                onclick="viewGame(${g.id})"
+              >
+                👁️ XEM
+              </button>
+
+
+              ${
+                paused
+
+                ?
+
+                `<button
+                  class="action resume"
+                  onclick="resumeGame(${g.id})"
+                >
+                  ▶️ MỞ LẠI
+                </button>`
+
+                :
+
+                `<button
+                  class="action pause"
+                  onclick="pauseGame(${g.id})"
+                >
+                  ⛔ TẠM NGỪNG
+                </button>`
+              }
+
+
+              <button
+                class="action delete"
+                onclick="askDelete(${g.id})"
+              >
+                🗑️ XÓA GAME
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =====================================================
+   ESCAPE ATTRIBUTE
+===================================================== */
+
+function escapeAttr(s){
+
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/"/g,"&quot;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+
+}
+
+
+/* =====================================================
+   TẠM NGỪNG GAME
+===================================================== */
+
+function pauseGame(id){
+
+  const games =
+    getGames();
+
+  const game =
+    games.find(g=>g.id===id);
+
+  if(!game)return;
+
+
+  game.paused=true;
+
+  saveGames(games);
+
+  render();
+
+  notice(
+    "⛔ Đã tạm ngừng game!"
+  );
+
+}
+
+
+/* =====================================================
+   MỞ LẠI GAME
+===================================================== */
+
+function resumeGame(id){
+
+  const games =
+    getGames();
+
+  const game =
+    games.find(g=>g.id===id);
+
+  if(!game)return;
+
+
+  game.paused=false;
+
+  saveGames(games);
+
+  render();
+
+  notice(
+    "▶️ Đã mở lại game!"
+  );
+
+}
+
+
+/* =====================================================
+   XÓA
+===================================================== */
+
+let deleteId=null;
+
+
+function askDelete(id){
+
+  const games =
+    getGames();
+
+  const game =
+    games.find(g=>g.id===id);
+
+  if(!game)return;
+
+
+  deleteId=id;
+
+  $("confirmText").textContent =
+    'Bạn có chắc muốn xóa "' +
+    game.name +
+    '" khỏi Kho Game?';
+
+
+  $("confirm")
+    .classList.add("active");
+
+}
+
+
+$("cancelDelete").onclick=()=>{
+
+  deleteId=null;
+
+  $("confirm")
+    .classList.remove("active");
+
+};
+
+
+$("confirmDelete").onclick=()=>{
+
+  if(deleteId===null)return;
+
+
+  let games =
+    getGames();
+
+
+  games =
+    games.filter(
+      g=>g.id!==deleteId
+    );
+
+
+  saveGames(games);
+
+
+  deleteId=null;
+
+  $("confirm")
+    .classList.remove("active");
+
+
+  render();
+
+  notice(
+    "🗑️ Đã xóa game!"
+  );
+
+};
+
+
+/* =====================================================
+   XEM GAME
+===================================================== */
+
+function viewGame(id){
+
+  const games =
+    getGames();
+
+  const game =
+    games.find(g=>g.id===id);
+
+  if(!game)return;
+
+
+  const win =
+    window.open(
+      "",
+      "_blank"
+    );
+
+
+  if(!win){
+
+    alert(
+      "⚠️ Trình duyệt đã chặn cửa sổ mới."
+    );
+
+    return;
+
+  }
+
+
+  win.document.open();
+
+  win.document.write(
+    game.code || ""
+  );
+
+  win.document.close();
+
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+$("search").oninput=()=>{
+
+  render();
+
+};
+
+
+/* =====================================================
+   CLICK NGOÀI CONFIRM
+===================================================== */
+
+$("confirm").onclick=e=>{
+
+  if(
+    e.target === $("confirm")
+  ){
+
+    $("confirm")
+      .classList.remove(
+        "active"
+      );
+
+    deleteId=null;
+
+  }
+
+};
+
+</script>
+
+</body>
+</html>
